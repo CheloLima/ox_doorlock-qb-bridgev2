@@ -113,9 +113,3 @@ TriggerEvent('ox_doorlock:setState', mrpd_locker_rooms.id, state)
 ```
 
 ```
-
-***
-
-Soll ich dir noch kurz erklären, wie du in FiveM Ingame jetzt mit dem Befehl `/doorlock` deine neuen LiMansion Keycards genau an die Türen deiner Villa koppelst?
-
-```
