@@ -1,134 +1,121 @@
-# Description (QB added)
-Personally i wanted to use this script into my qb-core server and i see there is no support for qb-core so i said why not i hope it will be help to your server.
-Also when you download the file please change the script name to "ox_doorlock" otherwise it will cause problems in script.
 
-# Ox Doorlock
 
-Door management resource, with compatibility for [ox_core](https://github.com/overextended/ox_core), [es_extended](https://github.com/esx-framework/esx_core), [nd_core](https://github.com/ND-Framework/ND_Core), and [qbox](https://github.com/Qbox-project/qbx_core).  
-Successor to nui_doorlock with less scuff and more stuff.
+# 🛠️ ox_doorlock - Native QBCore Inventory Fork by Chelo
 
-_The UI needs to be built - use the [latest release](https://github.com/overextended/ox_doorlock/releases/latest/download/ox_doorlock.zip) if you want to drag-n-drop._
+🌍 **[English Version](#english-version)** | 🇩🇪 **[Deutsche Version](#deutsche-version)**
 
-## Dependencies
+---
 
-### [oxmysql](https://github.com/overextended/oxmysql)
+## <a name="english-version"></a> 🌍 English Version
 
-Doors are stored in a database for ease-of-use and to allow data to be easily cleared or shared.
+### What is this fork?
+This fork modifies the standard `ox_doorlock` to fully support **native QBCore inventories** (such as `qb-inventory`, `lj-inventory`, or `ps-inventory`). 
 
-mysql-async is no longer supported.
-  - does not support error-catching (pcall)
-  - people use older versions which do not support parameters as arrays
-  - it isn't maintained and has issues that will never be resolved
+Even when configured for QBCore, the original script attempts to check for required items (like keycards or lockpicks) using the `ox_inventory:Search()` export. If you don't use `ox_inventory`, this results in the following console error:
+`SCRIPT ERROR: @ox_doorlock/server/main.lua: No such export Search in resource ox_inventory`
 
-### [ox_lib](https://github.com/overextended/ox_lib) (v2.3.0 or higher)
+✅ **Tested and Proven:** This fix is 100% functional and is currently actively used on the **[ParadoX-RP.com](https://paradox-rp.com) Roleplay Server**.
 
-Used for some UI elements (i.e. notifications, progress circle, input), and cache.
+### What was changed?
+- Replaced `ox_inventory:Search()` with the native `Player.Functions.GetItemByName()` for all door item checks.
+- Replaced `ox_inventory:RemoveItem()` with the native `Player.Functions.RemoveItem()` (e.g., when a lockpick breaks).
+- Fixed the internal `GetPlayer` overwrite issue that caused `attempt to index a nil value (field 'Functions')` errors during item validation.
 
-### [ox_target](https://github.com/overextended/ox_target) (preferred) or [qtarget](https://github.com/overextended/qtarget) (deprecated)
+### Installation
+1. Delete your existing `ox_doorlock` folder.
+2. Download this forked version and drop it into your resources folder.
+3. **IMPORTANT - UI BUILD:** Because this is a code fork, it does not include the compiled UI. You **must** download the latest official release from [overextended/ox_doorlock/releases](https://github.com/overextended/ox_doorlock/releases/latest), copy the `web` folder from that zip file, and paste it into this resource.
+4. Rename the folder to exactly `ox_doorlock` (otherwise it will cause errors).
+5. Configure your doors as usual.
+6. **Important:** Restart your entire server. Do not use `ensure ox_doorlock` while the server is running, as it will cause `ox_lib` callback errors.
 
-(Optional) Used for lockpicking.
+---
+### Original Documentation & API
+*This script requires `oxmysql`, `ox_lib` (v2.3.0+), and a target system (`ox_target` preferred).*
 
-## Usage
+**Usage:**
+Use the `/doorlock` command to open the UI and enter the settings for your new door. Once confirmed, activate your targeting resource (typically LALT) to select the entity (or entities) to use.
 
-Use the `/doorlock` command to open the UI and enter the settings for your new door.  
-Once you confirm the settings, activate your targeting resource (typically LALT) to select the entity (or entities) to use.
-
-Adding any arguments after the command will open the closest door to you, to easily modify it.
-
-## Conversion
-
-Placing nui_doorlock config files into the `convert` folder will convert the data and insert it into the database.  
-Success is _not_ guaranteed if using a fork on nui_doorlock, like the qb version.
-
-## Client API
-
-- Use the closest door. Still performs server-side checks, so may fail.
-
+**Client API:**
 ```lua
 exports.ox_doorlock:useClosestDoor()
-```
-
-- Pick the lock of the closest door. Still performs server-side checks, so may fail.
-
-```lua
 exports.ox_doorlock:pickClosestDoor()
+
 ```
 
-## Server API
-
-- Get data for door
+**Server API:**
 
 ```lua
 local mrpd_locker_rooms = exports.ox_doorlock:getDoor(1)
 local mrpd_locker_rooms = exports.ox_doorlock:getDoorFromName('mrpd locker rooms')
-```
 
-- Set door state (0: unlocked, 1: locked)
-
-```lua
+-- Set door state (0: unlocked, 1: locked)
 TriggerEvent('ox_doorlock:setState', mrpd_locker_rooms.id, state)
+
 ```
 
-- Listen for event when door is toggled
+---
+
+---
+
+## <a name="deutsche-version"></a> 🇩🇪 Deutsche Version
+
+### Was ist dieser Fork?
+
+Dieser Fork modifiziert das Standard `ox_doorlock` Skript, um **native QBCore Inventare** (wie `qb-inventory`, `lj-inventory` oder `ps-inventory`) vollständig zu unterstützen.
+
+Selbst wenn das originale Skript auf QBCore eingestellt ist, versucht es, benötigte Items (wie Keycards oder Dietriche) über den `ox_inventory:Search()` Export abzufragen. Wenn man kein `ox_inventory` nutzt, führt das zu folgendem Fehler:
+`SCRIPT ERROR: @ox_doorlock/server/main.lua: No such export Search in resource ox_inventory`
+
+✅ **Getestet und Bewährt:** Dieser Fix funktioniert zu 100 % und wird aktuell aktiv auf dem **[ParadoX-RP.com](https://paradox-rp.com) Roleplay Server** eingesetzt.
+
+### Was wurde geändert?
+
+* `ox_inventory:Search()` wurde durch die native Funktion `Player.Functions.GetItemByName()` für alle Item-Checks ersetzt.
+* `ox_inventory:RemoveItem()` wurde durch `Player.Functions.RemoveItem()` ersetzt (z.B., wenn ein Dietrich abbricht).
+* Ein Überschreibungsproblem mit `GetPlayer` wurde behoben, welches bei der Item-Validierung den Fehler `attempt to index a nil value (field 'Functions')` auslöste.
+
+### Installation
+
+1. Lösche deinen aktuellen `ox_doorlock` Ordner vom Server.
+2. Lade diesen Fork herunter und ziehe ihn in deinen Ressourcen-Ordner.
+3. **WICHTIG - UI BUILD:** Da dies ein Code-Fork ist, fehlt die fertig gerenderte Benutzeroberfläche. Du **musst** das offizielle Release von [overextended/ox_doorlock/releases](https://www.google.com/url?sa=E&source=gmail&q=https://github.com/overextended/ox_doorlock/releases/latest) herunterladen, den Ordner namens `web` aus der Zip-Datei kopieren und in diese Ressource einfügen.
+4. Benenne den Hauptordner exakt in `ox_doorlock` um (sonst gibt es Skript-Fehler).
+5. Richte deine Türen wie gewohnt ein.
+6. **Wichtig:** Starte deinen kompletten Server neu. Nutze **niemals** den Befehl `ensure ox_doorlock` im laufenden Betrieb, da dies zu `ox_lib` Callback-Fehlern führt.
+
+---
+
+### Original Dokumentation & API
+
+*Dieses Skript benötigt `oxmysql`, `ox_lib` (v2.3.0+) und ein Target-System (bevorzugt `ox_target`).*
+
+**Nutzung:**
+Nutze den Befehl `/doorlock`, um das UI zu öffnen und die Einstellungen für deine Tür vorzunehmen. Danach nutzt du dein Target-System (meistens LALT), um die Tür(en) auszuwählen.
+
+**Client API:**
 
 ```lua
-AddEventHandler('ox_doorlock:stateChanged', function(source, doorId, state, usedItem)
-    if usedItem == 'trainticket' then
-        local xPlayer = ESX.GetPlayerFromId(source)
-        xPlayer.removeInventoryItem(usedItem, 1)
-    end
-end)
+exports.ox_doorlock:useClosestDoor()
+exports.ox_doorlock:pickClosestDoor()
+
 ```
 
-## Door Settings
+**Server API:**
 
-### General
+```lua
+local mrpd_locker_rooms = exports.ox_doorlock:getDoor(1)
+local mrpd_locker_rooms = exports.ox_doorlock:getDoorFromName('mrpd locker rooms')
 
-- Door name
-  - Used to easily identify the door.
-- Passcode
-  - Door can be unlocked by anybody by using the code or phrase.
-- Autolock interval
-  - Door will be locked after x seconds.
-- Interact distance
-  - Door can only be used when within x metres.
-- Door rate
-  - Door movement speed for sliding/garage/automatic doors, or swinging doors when locked.
-- Locked
-  - Sets the door as locked by default.
-- Double
-  - Door is a set of two doors, controlled together.
-- Automatic
-  - Sliding/garage/automatic door.
-- Lockpick
-  - Door can be lockpicked when interacting with a targeting resource.
-- Hide UI
-  - No indicators (i.e. icon, text) will display on the door.
+-- Tür-Status setzen (0: auf, 1: zu)
+TriggerEvent('ox_doorlock:setState', mrpd_locker_rooms.id, state)
 
-### Characters
+```
 
-- Character Id
-  - Character identifier used by a framework (i.e. player.charid, xPlayer.identifier, Player.CitizenId).
+```
 
-### Groups
+***
 
-- Group
-  - Framework dependent, referring to jobs, gangs, etc.
-- Grade
-  - The minimum grade to allow access for the group (0 to allow all).
+Soll ich dir noch kurz erklären, wie du in FiveM Ingame jetzt mit dem Befehl `/doorlock` deine neuen LiMansion Keycards genau an die Türen deiner Villa koppelst?
 
-### Items
-
-- Item
-  - Name of the item.
-- Metadata type
-  - Requires metadata support (i.e. ox_inventory) to check slot.metadata.type
-
-### Lockpick
-
-- Difficulty
-  - Sets the skillcheck difficulty (see [docs](https://overextended.github.io/docs/ox_lib/Interface/Client/skillcheck)).
-- Area size
-  - Custom difficulty area size.
-- Speed multiplier
-  - Custom difficulty idicator speed.
+```
